@@ -24,7 +24,7 @@ print after.mean()
 print "\n"
 print before.mean()
 
-scaled_post = (pd.Series(range(1,len(after) + 1)) * int(round(len(before)/len(after)))).tolist()
+scaled_post = (pd.Series(range(1,len(after) + 1)) * len(before)/len(after)).tolist()
 
 plt.plot(scaled_post,after,list(range(1, len(before) + 1)), before)
 plt.show()
