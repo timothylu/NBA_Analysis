@@ -24,7 +24,24 @@ print after.mean()
 print "\n"
 print before.mean()
 
-scaled_post = (pd.Series(range(1,len(after) + 1)) * len(before)/len(after)).tolist()
+# MAKE A LINE PLOT
+# #######################
+#
+# scaled_post = (pd.Series(range(1,len(after) + 1)) * len(before)/len(after)).tolist()
+# plt.plot(scaled_post,after,list(range(1, len(before) + 1)), before)
 
-plt.plot(scaled_post,after,list(range(1, len(before) + 1)), before)
+# MAKE A BOX/WHISKER
+# #######################
+# 
+fig, axs = plt.subplots(1,2)
+
+axs[0].boxplot(before)
+axs[0].set_title("Before All-Star Break (PPG)")
+
+axs[1].boxplot(after)
+axs[1].set_title("After All-Star Break (PPG)")
+axs[1].set_ylim(axs[0].get_ylim())
+
+fig.subplots_adjust(left=0.08, right=0.98, bottom=0.05, top=0.9, hspace =0.4, wspace=0.3)
+
 plt.show()
