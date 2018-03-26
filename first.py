@@ -14,6 +14,15 @@ def gamescore(playerGame):
    GmSc = p['PTS'] + 0.4*p['FGM'] - 0.7*p['FGA'] - 0.4*(p['FTA'] - p['FTM']) + 0.7*p['OREB'] + 0.3*(p['REB'] - p['OREB']) + p['STL'] + 0.7*p['AST'] + 0.7*p['BLK'] - 0.4*p['PF'] - p['TOV']
    return GmSc
 
+def TSA(playerGame):
+   p = playerGame
+   return p['FGA'] + 0.44*p['FTA']
+
+def TSPercent(playerGame):
+   p = playerGame
+   TSP = p['PTS']/(2*TSA(p))
+   return TSP
+
 def pre_post_ASB_2017_18(playercode):
    first, last = playercode.split('_')
    first = first.title()
@@ -149,7 +158,7 @@ def main():
    player_game_logs = goldsberry.player.game_logs(player_id)
    player_game_logs_2017 = pd.DataFrame(player_game_logs.logs())
 
-   print gamescore(player_game_logs_2017.loc[0])
+   print TSPercent(player_game_logs_2017.loc[0])
 
 if __name__ == "__main__":
    main()
