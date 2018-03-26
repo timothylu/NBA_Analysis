@@ -38,6 +38,8 @@ def pre_post_ASB_2017_18(playercode):
 
    player_game_logs = goldsberry.player.game_logs(player_id)
    player_game_logs_2017 = pd.DataFrame(player_game_logs.logs())
+   player_game_logs_2017['GmSc'] = player_game_logs_2017.apply(lambda row: gamescore (row),axis = 1)
+   player_game_logs_2017['TSP'] = player_game_logs_2017.apply(lambda row: gamescore (row), axis = 1)
    post_all_star = player_game_logs_2017.loc[58:82]
    pre_all_star = player_game_logs_2017.loc[0:57]
    #lgl17 = post_all_star.loc[
@@ -45,8 +47,8 @@ def pre_post_ASB_2017_18(playercode):
    #								& (post_all_star['PTS'] < 30)
    #								]
 
-   after = np.array(pd.DataFrame(post_all_star, columns=['PTS']))
-   before = np.array(pd.DataFrame(pre_all_star, columns=['PTS']))
+   after = np.array(pd.DataFrame(post_all_star, columns=['GmSc']))
+   before = np.array(pd.DataFrame(pre_all_star, columns=['GmSc']))
    print after.mean()
    print "\n"
    print before.mean()
@@ -157,8 +159,6 @@ def main():
 
    player_game_logs = goldsberry.player.game_logs(player_id)
    player_game_logs_2017 = pd.DataFrame(player_game_logs.logs())
-
-   print TSPercent(player_game_logs_2017.loc[0])
-
+   
 if __name__ == "__main__":
    main()
