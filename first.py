@@ -39,40 +39,52 @@ def pre_post_ASB_2017_18(playercode):
    player_game_logs = goldsberry.player.game_logs(player_id)
    player_game_logs_2017 = pd.DataFrame(player_game_logs.logs())
    player_game_logs_2017['GmSc'] = player_game_logs_2017.apply(lambda row: gamescore (row),axis = 1)
-   player_game_logs_2017['TSP'] = player_game_logs_2017.apply(lambda row: gamescore (row), axis = 1)
+   player_game_logs_2017['TSP'] = player_game_logs_2017.apply(lambda row: TSPercent (row), axis = 1)
    post_all_star = player_game_logs_2017.loc[58:82]
    pre_all_star = player_game_logs_2017.loc[0:57]
-   #lgl17 = post_all_star.loc[
+   # lgl17 = post_all_star.loc[
    #								(post_all_star['PTS'] > 25)
    #								& (post_all_star['PTS'] < 30)
    #								]
 
-   after = np.array(pd.DataFrame(post_all_star, columns=['GmSc']))
-   before = np.array(pd.DataFrame(pre_all_star, columns=['GmSc']))
-   print after.mean()
+   sortedAfter = post_all_star.sort_values(by=['TSP'])
+   sortedBefore = pre_all_star.sort_values(by=['TSP'])
+
+   afterGS = np.array(pd.DataFrame(sortedAfter, columns=['GmSc']))
+   afterTSP = np.array(pd.DataFrame(sortedAfter, columns=['TSP']))
+
+   beforeGS = np.array(pd.DataFrame(sortedBefore, columns=['GmSc']))
+   beforeTSP = np.array(pd.DataFrame(sortedBefore, columns=['TSP']))
+   print afterGS.mean()
    print "\n"
-   print before.mean()
+   print beforeGS.mean()
 
    # MAKE A LINE PLOT
    # #######################
-   #
-   # scaled_post = (pd.Series(range(1,len(after) + 1)) * len(before)/len(after)).tolist()
-   # plt.plot(scaled_post,after,list(range(1, len(before) + 1)), before)
-
-
-   # MAKE A BOX/WHISKER
-   #######################
    
-   fig, axs = plt.subplots(1,2)
+   # USE FOR A BASIC LINE PLOT
+   # scaled_post = (pd.Series(range(1,len(after) + 1)) * len(before)/len(after)).tolist()
+   print afterTSP
+   print afterGS
 
-   axs[0].boxplot(before)
-   axs[0].set_title("Before All-Star Break (PPG)")
+   plt.plot(afterTSP,afterGS,beforeTSP,beforeGS)
+   plt.xlabel('True Shooting %')
+   plt.ylabel('GameScore')
 
-   axs[1].boxplot(after)
-   axs[1].set_title("After All-Star Break (PPG)")
-   axs[1].set_ylim(axs[0].get_ylim())
 
-   fig.subplots_adjust(left=0.08, right=0.98, bottom=0.05, top=0.9, hspace =0.4, wspace=0.3)
+   # # MAKE A BOX/WHISKER
+   # #######################
+   
+   # fig, axs = plt.subplots(1,2)
+
+   # axs[0].boxplot(before)
+   # axs[0].set_title("Before All-Star Break (PPG)")
+
+   # axs[1].boxplot(after)
+   # axs[1].set_title("After All-Star Break (PPG)")
+   # axs[1].set_ylim(axs[0].get_ylim())
+
+   # fig.subplots_adjust(left=0.08, right=0.98, bottom=0.05, top=0.9, hspace =0.4, wspace=0.3)
 
 
    # MAKE A HISTOGRAM
@@ -159,6 +171,6 @@ def main():
 
    player_game_logs = goldsberry.player.game_logs(player_id)
    player_game_logs_2017 = pd.DataFrame(player_game_logs.logs())
-   
+
 if __name__ == "__main__":
    main()
