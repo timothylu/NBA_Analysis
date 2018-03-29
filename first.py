@@ -58,18 +58,18 @@ def pre_post_ASB_2017_18(playercode):
    print afterGS.mean()
    print "\n"
    print beforeGS.mean()
-
+   
    # MAKE A LINE PLOT
    # #######################
    
    # USE FOR A BASIC LINE PLOT
    # scaled_post = (pd.Series(range(1,len(after) + 1)) * len(before)/len(after)).tolist()
-   print afterTSP
-   print afterGS
+   # print afterTSP
+   # print afterGS
 
-   plt.plot(afterTSP,afterGS,beforeTSP,beforeGS)
-   plt.xlabel('True Shooting %')
-   plt.ylabel('GameScore')
+   # plt.plot(afterTSP,afterGS,beforeTSP,beforeGS)
+   # plt.xlabel('True Shooting %')
+   # plt.ylabel('GameScore')
 
 
    # # MAKE A BOX/WHISKER
@@ -89,11 +89,13 @@ def pre_post_ASB_2017_18(playercode):
 
    # MAKE A HISTOGRAM
    # #####################
-   # 
-   # fig, axs = plt.subplots(1,2, sharey=True, tight_layout=True)
-   #
-   # axs[0].hist(before, bins=4)
-   # axs[1].hist(after, bins=4)
+   
+   fig, axs = plt.subplots(1,2, sharey=True, tight_layout=True)
+   
+   axs[0].hist(beforeGS, bins=15)
+   axs[0].set_title('GameScore Before All-Star Break')
+   axs[1].hist(afterGS, bins=15)
+   axs[1].set_title('GameScore After All-Star Break')
 
    plt.savefig('figure.png')
 
