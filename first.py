@@ -23,6 +23,21 @@ def TSPercent(playerGame):
    TSP = p['PTS']/(2*TSA(p))
    return TSP
 
+def getGameLog(playerGame):
+   p = playerGame
+   gID = p['Game_ID']
+   print "looking for " + str(p['MATCHUP']) + " game. ID = " + str(gID)
+   gameids = goldsberry.GameIDs()
+   gameids2017 = pd.DataFrame(gameids.game_list())
+   return gameids2017.ix[gameids2017['GAME_ID'] == gID]
+
+def uPER(playerGame):
+   # TO FIX LATER
+   p = playerGame
+
+   uPER = 0
+   return uPER
+
 def pre_post_ASB_2017_18(playercode):
    first, last = playercode.split('_')
    first = first.title()
@@ -46,6 +61,8 @@ def pre_post_ASB_2017_18(playercode):
    #								(post_all_star['PTS'] > 25)
    #								& (post_all_star['PTS'] < 30)
    #								]
+
+   print getGameLog(player_game_logs_2017.loc[5])
 
    sortedAfter = post_all_star.sort_values(by=['TSP'])
    sortedBefore = pre_all_star.sort_values(by=['TSP'])
@@ -164,15 +181,6 @@ def pre_post_ASB_2017_18(playercode):
 def main():
    pre_post_ASB_2017_18('damian_lillard')
 
-   playercode = 'damian_lillard'
-
-   players = goldsberry.PlayerList(Season='2017-18')
-   players2017 = pd.DataFrame(players.players())
-
-   player_id = players2017.loc[players2017['PLAYERCODE'] == playercode]['PERSON_ID']
-
-   player_game_logs = goldsberry.player.game_logs(player_id)
-   player_game_logs_2017 = pd.DataFrame(player_game_logs.logs())
 
 if __name__ == "__main__":
    main()
