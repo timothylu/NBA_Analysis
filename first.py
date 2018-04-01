@@ -14,27 +14,51 @@ def gamescore(playerGame):
    GmSc = p['PTS'] + 0.4*p['FGM'] - 0.7*p['FGA'] - 0.4*(p['FTA'] - p['FTM']) + 0.7*p['OREB'] + 0.3*(p['REB'] - p['OREB']) + p['STL'] + 0.7*p['AST'] + 0.7*p['BLK'] - 0.4*p['PF'] - p['TOV']
    return GmSc
 
+# gets the True Shooting attempts from a player game
 def TSA(playerGame):
    p = playerGame
    return p['FGA'] + 0.44*p['FTA']
 
+# gets the true shooting % from a player game
 def TSPercent(playerGame):
    p = playerGame
    TSP = p['PTS']/(2*TSA(p))
    return TSP
 
-def getGameLog(playerGame):
+# WORKING TO FIX
+# returns [home team, away team] logs for a specific game
+def getGameLog(playerGame, playercode):
    p = playerGame
    gID = p['Game_ID']
    print "looking for " + str(p['MATCHUP']) + " game. ID = " + str(gID)
    gameids = goldsberry.GameIDs()
    gameids2017 = pd.DataFrame(gameids.game_list())
-   return gameids2017.ix[gameids2017['GAME_ID'] == gID]
+
+   players = goldsberry.PlayerList(Season='2017-18')
+   players2017 = pd.DataFrame(players.players())
+
+   players2017.reset_index(drop=True)
+   gameids2017.reset_index(drop=True)
+
+   team_id = players2017.loc[players2017['PLAYERCODE'] == playercode]['TEAM_ID']
+
+   print hometeam_code
+
+   # TO FIX 
+   home = gameids2017.loc[(gameids2017['GAME_ID'] == gID) & (gameids2017['TEAM_ID'] == hometeam_code)]
+   print home
+   #away = gameids2017.ix[gameids2017['GAME_ID'] == gID]
+
+
+   print hometeam_code
+
+   return [home,away]
 
 def uPER(playerGame):
    # TO FIX LATER
    p = playerGame
-
+   g = getGameLog(playerGame)
+   g = g.ix[g['']]
    uPER = 0
    return uPER
 
@@ -62,7 +86,7 @@ def pre_post_ASB_2017_18(playercode):
    #								& (post_all_star['PTS'] < 30)
    #								]
 
-   print getGameLog(player_game_logs_2017.loc[5])
+   print getGameLog(player_game_logs_2017.loc[5], team_id)
 
    sortedAfter = post_all_star.sort_values(by=['TSP'])
    sortedBefore = pre_all_star.sort_values(by=['TSP'])
