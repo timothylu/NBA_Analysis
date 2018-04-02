@@ -27,31 +27,20 @@ def TSPercent(playerGame):
 
 # WORKING TO FIX
 # returns [home team, away team] logs for a specific game
-def getGameLog(playerGame, playercode):
+#    players = list of players from the season
+#    games = list of games from the season
+def getGameLog(playerGame, playercode, players, games):
    p = playerGame
    gID = p['Game_ID']
    print "looking for " + str(p['MATCHUP']) + " game. ID = " + str(gID)
-   gameids = goldsberry.GameIDs()
-   gameids2017 = pd.DataFrame(gameids.game_list())
 
-   players = goldsberry.PlayerList(Season='2017-18')
-   players2017 = pd.DataFrame(players.players())
-
-   players2017.reset_index(drop=True)
-   gameids2017.reset_index(drop=True)
-
-   team_id = players2017.loc[players2017['PLAYERCODE'] == playercode]['TEAM_ID']
-
-   print hometeam_code
+   hometeam_code = players.loc[players['PLAYERCODE'] == playercode]['TEAM_ID'].item()
 
    # TO FIX 
-   home = gameids2017.loc[(gameids2017['GAME_ID'] == gID) & (gameids2017['TEAM_ID'] == hometeam_code)]
-   print home
+   home = games.loc[(games['GAME_ID'] == gID) & (games['TEAM_ID'] == hometeam_code)]
+   away = games.loc[(games['GAME_ID'] == gID) & (games['TEAM_ID'] != hometeam_code)]
+
    #away = gameids2017.ix[gameids2017['GAME_ID'] == gID]
-
-
-   print hometeam_code
-
    return [home,away]
 
 def uPER(playerGame):
@@ -71,6 +60,10 @@ def pre_post_ASB_2017_18(playercode):
    players = goldsberry.PlayerList(Season='2017-18')
    players2017 = pd.DataFrame(players.players())
 
+   games = goldsberry.GameIDs()
+   games.get_new_data(Season='2017-18')
+   games2017 = pd.DataFrame(games.game_list())
+
    player_id = players2017.loc[players2017['PLAYERCODE'] == playercode]['PERSON_ID']
 
    team_id = players2017.loc[players2017['PLAYERCODE'] == playercode]['TEAM_ID']
@@ -86,7 +79,9 @@ def pre_post_ASB_2017_18(playercode):
    #								& (post_all_star['PTS'] < 30)
    #								]
 
-   print getGameLog(player_game_logs_2017.loc[5], team_id)
+
+
+   print getGameLog(player_game_logs_2017.loc[5], playercode, players2017, games2017)
 
    sortedAfter = post_all_star.sort_values(by=['TSP'])
    sortedBefore = pre_all_star.sort_values(by=['TSP'])
