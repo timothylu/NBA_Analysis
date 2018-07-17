@@ -1,14 +1,18 @@
 import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup, SoupStrainer
+from sklearn import datasets, linear_model
 import sys
 import string
 import requests
 import datetime
 import progressbar
 import time
+import matplotlib.pyplot as plt
 
-def player_logs_season(first_name, last_name, season):
+def player_logs_season(first_name, last_name, season, logs = True):
+    if logs:
+        print(f'Getting data from {int(season) - 1}-{season[-2:]} season...')
     games = []
     url = f'https://www.basketball-reference.com/players/' \
         f'{last_name[0]}/{last_name[:5]}{first_name[:2]}01/gamelog/{season}/'.lower()
@@ -34,9 +38,10 @@ def player_logs_season(first_name, last_name, season):
                     col_head.append(heading.text.lower())
             else:
                 if empt_idx == 0:
-                    col_head.append('is_home')
+                    col_head.append('h/a')
                 elif empt_idx == 1:
                     col_head.append('w/l')
+                    col_head.append('dif')
                 else:
                     col_head.append(empt_idx)
                 empt_idx += 1
@@ -55,20 +60,28 @@ def player_logs_season(first_name, last_name, season):
 
                 #print(f'{col}\t{txt}')
 
-                if col == 'is_home':
+                if col == 'h/a':
                     game[col] = ('@' not in txt)
                 elif col == 'w/l':
-                    game[col] = (txt[0], txt[txt.find("(") + 1:int(txt.find(")"))])
+                    game[col] = txt[0]
+                    count += 1
+                    col = col_head[count]
+                    game[col] = txt[txt.find("(") + 1:int(txt.find(")"))]
                 elif col == 'mp':
                     min_sec = [txt[:txt.find(':')], txt[txt.find(':') + 1:]]
                     game[col] = int(min_sec[0]) * 60 + int(min_sec[1])
-                elif col == '+/-':
-                    game[col] = int(txt)
                 else:
-                    game[col] = cell.text
+                    try:
+                        game[col] = float(txt)
+                    except:
+                        try:
+                            game[col] = int(txt)
+                        except:
+                            game[col] = txt
                 count += 1
             game['season'] = season
             games.append(game)
+        print()
         
     return pd.DataFrame(games)
 
@@ -110,10 +123,36 @@ def sec_to_mp(sec):
 
 #now = datetime.datetime.now()
 
-print(player_logs_career('Damian', 'Lillard'))
-# dame_lillard_2015 = player_logs_season('Damian', 'Lillard','2015')
-# print(dame_lillard_2015['+/-'])
-        
-        
+# print(player_logs_career('Mugsy', 'Bogues'))
+
+col = 'blk'
+
+lillard_2015 = player_logs_season('Damian', 'Lillard','2018')
+win_pts = lillard_2015.loc[lillard_2015['w/l'] == 'W'][col].values
+win_min = lillard_2015.loc[lillard_2015['w/l'] == 'W'].mp.values
+w_min = win_min/60
+w_pp36 = win_pts/(w_min)
+plt.scatter(w_min, w_pp36, label = 'win', color = 'orange')
+
+los_pts = lillard_2015.loc[lillard_2015['w/l'] == 'L'][col].values
+los_min = lillard_2015.loc[lillard_2015['w/l'] == 'L'].mp.values
+l_min = los_min/60
+l_pp36 = los_pts/l_min
+plt.scatter(l_min, l_pp36, label = 'loss', color = 'blue')
+
+
+fit_w = np.polyfit(w_min, w_pp36, 1)
+fit_w_fn = np.poly1d(fit_w)
+fit_l = np.polyfit(l_min, l_pp36, 1)
+fit_l_fn = np.poly1d(fit_l)
+
+plt.plot(w_min, fit_w_fn(w_min), color='orange', linewidth=1)
+plt.plot(l_min, fit_l_fn(l_min), color='blue', linewidth=1)
+
+plt.xlabel('minutes')
+plt.ylabel(f'{col} per 36 ({col}/36)')
+
+plt.legend(loc='upper left')
+plt.show()
 
 
