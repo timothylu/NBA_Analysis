@@ -46,6 +46,9 @@ def bench_warmer(series):
         if 10 >= s:
             count += 1
     return count/total
+    
+def print_pct(dec):
+    return str(round(dec * 100, 2)) + ' %'
 
 def draft_ranks(year_range, logs = True):
     '''
@@ -84,4 +87,4 @@ def draft_ranks(year_range, logs = True):
     # return sorted_ranks[sorted_ranks['pk'] <= 60]
 
 
-print(draft_ranks((1985,2005)))
+print(draft_ranks((1980, 2007)))

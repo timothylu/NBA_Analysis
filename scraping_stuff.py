@@ -117,6 +117,7 @@ def get_draft(year, logs = True):
 
 
 def player_logs_season(first_name, last_name, season, logs = True):
+    season = str(season)
     if logs:
         print(f'Getting data from {int(season) - 1}-{season[-2:]} season...')
     games = []
@@ -234,40 +235,9 @@ def sec_to_mp(sec):
     sec = sec%60
     return f'{minutes}:{sec}'
 
+
 #now = datetime.datetime.now()
 
-# print(player_logs_career('Mugsy', 'Bogues'))
-
-# col = 'blk'
-
-# lillard_2015 = player_logs_season('Damian', 'Lillard','2018')
-# win_pts = lillard_2015.loc[lillard_2015['w/l'] == 'W'][col].values
-# win_min = lillard_2015.loc[lillard_2015['w/l'] == 'W'].mp.values
-# w_min = win_min/60
-# w_pp36 = win_pts/(w_min)
-# plt.scatter(w_min, w_pp36, label = 'win', color = 'orange')
-
-# los_pts = lillard_2015.loc[lillard_2015['w/l'] == 'L'][col].values
-# los_min = lillard_2015.loc[lillard_2015['w/l'] == 'L'].mp.values
-# l_min = los_min/60
-# l_pp36 = los_pts/l_min
-# plt.scatter(l_min, l_pp36, label = 'loss', color = 'blue')
 
 
-# fit_w = np.polyfit(w_min, w_pp36, 1)
-# fit_w_fn = np.poly1d(fit_w)
-# fit_l = np.polyfit(l_min, l_pp36, 1)
-# fit_l_fn = np.poly1d(fit_l)
 
-# plt.plot(w_min, fit_w_fn(w_min), color='orange', linewidth=1)
-# plt.plot(l_min, fit_l_fn(l_min), color='blue', linewidth=1)
-
-# plt.xlabel('minutes')
-# plt.ylabel(f'{col} per 36 ({col}/36)')
-
-# plt.legend(loc='upper left')
-# plt.show()
-
-
-# draft_2015 = get_draft(2000)
-# print(draft_2015[draft_2015['pk'] == 30].player.values[0])
